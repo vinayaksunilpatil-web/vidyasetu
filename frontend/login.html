@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — VidyaSetu</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { display: flex; min-height: 100vh; }
+
+    .auth-left {
+      flex: 1;
+      background: linear-gradient(150deg, var(--green-900) 0%, var(--green-700) 60%, var(--teal-600) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-left::before {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+      top: -100px; right: -80px;
+    }
+
+    .auth-left::after {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+      bottom: -80px; left: -60px;
+    }
+
+    .auth-left-content { position: relative; z-index: 1; text-align: center; }
+
+    .auth-logo {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -1px;
+      margin-bottom: 6px;
+    }
+
+    .auth-logo span { color: var(--green-400); }
+
+    .auth-tagline {
+      color: rgba(255,255,255,0.75);
+      font-size: 16px;
+      margin-bottom: 48px;
+    }
+
+    .auth-feature {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius-md);
+      padding: 14px 20px;
+      margin-bottom: 12px;
+      text-align: left;
+      backdrop-filter: blur(4px);
+    }
+
+    .auth-feature-icon { font-size: 24px; }
+    .auth-feature-text { color: rgba(255,255,255,0.9); font-size: 14px; line-height: 1.4; }
+    .auth-feature-text strong { color: white; display: block; font-size: 15px; }
+
+    .auth-right {
+      width: 460px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 40px;
+      background: var(--bg-page);
+    }
+
+    .auth-form-box { width: 100%; }
+
+    .auth-form-title {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 6px;
+    }
+
+    .auth-form-sub {
+      color: var(--text-light);
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .input-with-icon {
+      position: relative;
+    }
+
+    .input-with-icon .icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .input-with-icon .form-control { padding-left: 42px; }
+
+    .toggle-pass {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--text-muted);
+      user-select: none;
+    }
+
+    .forgot-link {
+      color: var(--green-700);
+      font-size: 13px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .forgot-link:hover { text-decoration: underline; }
+
+    .auth-switch { text-align: center; margin-top: 24px; font-size: 14px; color: var(--text-mid); }
+    .auth-switch a { color: var(--green-700); font-weight: 600; text-decoration: none; }
+    .auth-switch a:hover { text-decoration: underline; }
+
+    @media (max-width: 850px) {
+      body { flex-direction: column; }
+      .auth-left { display: none; }
+      .auth-right { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-left">
+    <div class="auth-left-content">
+      <div class="auth-logo">🎓 Vidya<span>Setu</span></div>
+      <div class="auth-tagline">Smart Education Donation Intelligence</div>
+
+      <div class="auth-feature">
+        <span class="auth-feature-icon">🔐</span>
+        <div class="auth-feature-text">
+          <strong>OTP-Secured Login</strong>
+          Every login verified via email OTP for maximum security
+        </div>
+      </div>
+      <div class="auth-feature">
+        <span class="auth-feature-icon">📊</span>
+        <div class="auth-feature-text">
+          <strong>Real-Time Impact Tracking</strong>
+          See exactly how your donations help students
+        </div>
+      </div>
+      <div class="auth-feature">
+        <span class="auth-feature-icon">🌱</span>
+        <div class="auth-feature-text">
+          <strong>Full Transparency</strong>
+          NGO expense tracking and Trust Index for donor confidence
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-form-box">
+      <div class="auth-form-title">Welcome back 👋</div>
+      <div class="auth-form-sub">Sign in to your VidyaSetu account</div>
+
+      <div id="formAlert"></div>
+
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <div class="input-with-icon">
+          <span class="icon">📧</span>
+          <input type="email" class="form-control" id="email" placeholder="you@example.com" autocomplete="email">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:7px;">
+          <label class="form-label" style="margin-bottom:0;">Password</label>
+          <a href="/forgot-password" class="forgot-link">Forgot password?</a>
+        </div>
+        <div class="input-with-icon">
+          <span class="icon">🔑</span>
+          <input type="password" class="form-control" id="password" placeholder="Enter your password" autocomplete="current-password">
+          <span class="toggle-pass" onclick="togglePwd()" id="toggleIcon">👁</span>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-full btn-lg" onclick="handleLogin()" id="loginBtn">
+        Sign In
+      </button>
+
+      <div class="divider">or</div>
+
+      <div class="auth-switch">
+        Don't have an account? <a href="/signup">Create one free</a>
+      </div>
+      <div class="auth-switch" style="margin-top:8px;">
+        <a href="/verify-otp" style="color:var(--text-light); font-weight:400;">Already have OTP? Verify here →</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    function togglePwd() {
+      const pwd = document.getElementById('password');
+      const icon = document.getElementById('toggleIcon');
+      pwd.type = pwd.type === 'password' ? 'text' : 'password';
+      icon.textContent = pwd.type === 'password' ? '👁' : '🙈';
+    }
+    
+    function showAlert(msg, type = 'error') {
+  const el = document.getElementById('formAlert');
+  el.innerHTML = `<div class="alert alert-${type === 'error' ? 'error' : 'success'}">${msg}</div>`;
+}
+
+   async function handleLogin() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const btn = document.getElementById('loginBtn');
+
+  // ← ADD THIS — Safety reset after 10 seconds no matter what
+  const safetyReset = setTimeout(() => {
+    btn.disabled = false;
+    btn.innerHTML = 'Sign In';
+  }, 10000);
+
+  if (!email || !password) {
+    showAlert('Please enter email and password.');
+    clearTimeout(safetyReset);
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Verifying...';
+
+  try {
+    const loginRes = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const loginData = await loginRes.json();
+
+    if (!loginData.success) {
+      clearTimeout(safetyReset);
+      showAlert(loginData.message);
+      btn.disabled = false;
+      btn.innerHTML = 'Sign In';
+      return;
+    }
+
+    // Send OTP
+    btn.innerHTML = '<span class="spinner"></span> Sending OTP...';
+
+    const otpRes = await fetch('/api/auth/send-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const otpData = await otpRes.json();
+
+    if (!otpData.success) {
+      clearTimeout(safetyReset);
+      showAlert(otpData.message);
+      btn.disabled = false;
+      btn.innerHTML = 'Sign In';
+      return;
+    }
+
+    // Success - redirect
+    clearTimeout(safetyReset);
+    sessionStorage.setItem('pendingEmail', email);
+    window.location.href = '/verify-otp';
+
+  } catch (err) {
+    clearTimeout(safetyReset);
+    showAlert('Connection error. Please try again.');
+    btn.disabled = false;
+    btn.innerHTML = 'Sign In';
+  }
+}
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+  </script>
+</body>
+</html>

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGO Dashboard — VidyaSetu</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .ngo-banner {
+      background: linear-gradient(135deg, var(--green-900), var(--green-700), var(--teal-600));
+      border-radius: var(--radius-xl);
+      padding: 28px 32px;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ngo-banner::after {
+      content: '🏫';
+      position: absolute;
+      font-size: 100px;
+      right: 30px;
+      top: -10px;
+      opacity: 0.12;
+    }
+
+    .ngo-banner-title { font-family: var(--font-display); font-size: 26px; font-weight: 800; color: white; }
+    .ngo-banner-sub { color: rgba(255,255,255,0.75); font-size: 14px; margin-top: 4px; }
+
+    .trust-index-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .trust-value {
+      font-family: var(--font-display);
+      font-size: 40px;
+      font-weight: 800;
+      color: var(--green-700);
+    }
+
+    .trust-label { font-size: 13px; color: var(--text-light); margin-top: 4px; margin-bottom: 14px; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 4px; background: var(--green-50); padding: 4px; border-radius: var(--radius-md); margin-bottom: 20px; }
+
+    .tab-btn {
+      flex: 1;
+      padding: 9px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text-light);
+      background: transparent;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: white;
+      color: var(--green-800);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Expense Form */
+    .expense-form {
+      background: var(--green-50);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .expense-form-title {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 14px;
+    }
+
+    .form-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 28px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding: 0 0 20px 20px;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: -24px;
+      top: 4px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: 0 0 0 2px var(--border);
+    }
+
+    .timeline-dot.donation { background: var(--green-600); box-shadow: 0 0 0 2px var(--green-200); }
+    .timeline-dot.expense  { background: var(--amber-500); box-shadow: 0 0 0 2px #fde68a; }
+
+    .timeline-meta { font-size: 12px; color: var(--text-light); margin-bottom: 3px; }
+    .timeline-title { font-size: 14px; font-weight: 600; color: var(--text-dark); }
+    .timeline-amount { font-size: 13px; color: var(--text-mid); }
+
+    /* Low fund alerts */
+    .low-fund-alert {
+      background: #fff3e0;
+      border: 1px solid #ffe0b2;
+      border-left: 4px solid var(--amber-500);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .low-fund-alert .alert-text { font-size: 14px; font-weight: 600; color: #5d4037; }
+    .low-fund-alert .alert-sub  { font-size: 12px; color: #795548; }
+
+    /* Monthly chart bars */
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 120px;
+      padding: 0 4px;
+    }
+
+    .chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .chart-bar { width: 100%; background: linear-gradient(to top, var(--green-600), var(--green-400)); border-radius: 4px 4px 0 0; min-height: 4px; transition: height 0.5s ease; }
+    .chart-bar-label { font-size: 10px; color: var(--text-light); font-weight: 600; }
+    .chart-bar-val { font-size: 11px; color: var(--green-700); font-weight: 700; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/ngo-dashboard" class="navbar-brand">
+      <div class="logo-icon">🎓</div>
+      <div>
+        <span class="brand-text">VidyaSetu</span>
+        <span class="brand-sub">NGO Admin Panel</span>
+      </div>
+    </a>
+    <ul class="navbar-nav">
+      <li><a href="/ngo-dashboard" class="active">Dashboard</a></li>
+      <li><a href="/donate">Donate Portal</a></li>
+    </ul>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="user-badge" style="background:#fff8e1; border-color:#ffe082;">
+        <div class="user-avatar" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);" id="userInitial">A</div>
+        <span id="userName">Admin</span>
+        <span class="badge badge-amber" style="font-size:10px;">NGO</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="page-container">
+
+    <!-- Banner -->
+    <div class="ngo-banner">
+      <div>
+        <div class="ngo-banner-title">VidyaSetu NGO Dashboard 🏫</div>
+        <div class="ngo-banner-sub" id="ngoDate">Loading overview...</div>
+      </div>
+      <div style="position:relative;z-index:1;">
+        <div style="display:flex; gap:16px;">
+          <div style="text-align:center;">
+            <div style="font-family:var(--font-display); font-size:28px; font-weight:800; color:var(--green-400);" id="bannerDonors">—</div>
+            <div style="color:rgba(255,255,255,0.7); font-size:12px;">Total Donors</div>
+          </div>
+          <div style="width:1px; background:rgba(255,255,255,0.2);"></div>
+          <div style="text-align:center;">
+            <div style="font-family:var(--font-display); font-size:28px; font-weight:800; color:var(--green-400);" id="bannerStudents">—</div>
+            <div style="color:rgba(255,255,255,0.7); font-size:12px;">Students Helped</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="grid-4" style="margin-bottom:28px;">
+      <div class="stat-card">
+        <div class="stat-icon green">💰</div>
+        <div>
+          <div class="stat-value" id="totalDonations">₹0</div>
+          <div class="stat-label">Total Donations</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon amber">📤</div>
+        <div>
+          <div class="stat-value" id="totalExpenses">₹0</div>
+          <div class="stat-label">Total Expenses</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon teal">🏦</div>
+        <div>
+          <div class="stat-value" id="remainingFund">₹0</div>
+          <div class="stat-label">Remaining Fund</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue">🎁</div>
+        <div>
+          <div class="stat-value" id="donationCount">0</div>
+          <div class="stat-label">Donations Received</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trust Index -->
+    <div class="grid-2" style="margin-bottom:28px;">
+      <div class="trust-index-card">
+        <div style="font-size:13px; font-weight:700; color:var(--text-light); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;">🔍 Trust Index</div>
+        <div class="trust-value" id="trustValue">0%</div>
+        <div class="trust-label">Fund Utilization Rate (Expenses / Donations × 100)</div>
+        <div class="progress-bar-wrap" style="height:14px; margin-bottom:12px;">
+          <div class="progress-bar-fill" id="trustBar" style="width:0%;"></div>
+        </div>
+        <div style="font-size:13px; color:var(--text-mid);" id="trustInterpret">—</div>
+      </div>
+
+      <!-- Low Fund Alerts -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🔥 Low Fund Alerts</div>
+        </div>
+        <div id="lowFundAlerts">
+          <div class="empty-state" style="padding:24px;"><div class="icon">✅</div><p>All funds are adequate</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Tabs -->
+    <div class="card">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('donors')">📋 All Donors</button>
+        <button class="tab-btn" onclick="switchTab('expenses')">💼 Expenses</button>
+        <button class="tab-btn" onclick="switchTab('timeline')">🕐 Impact Timeline</button>
+        <button class="tab-btn" onclick="switchTab('analytics')">📊 Analytics</button>
+      </div>
+
+      <!-- Tab: Donors -->
+      <div class="tab-panel active" id="tab-donors">
+        <div style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+          <div style="font-size:14px; color:var(--text-light);">Complete donor history</div>
+          <input type="text" class="form-control" style="max-width:220px;" placeholder="🔍 Search donors..." oninput="filterDonors(this.value)">
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Donor</th><th>Email</th><th>Category</th><th>Amount</th><th>Payment</th><th>Date</th></tr>
+            </thead>
+            <tbody id="donorsTbody">
+              <tr><td colspan="6"><div class="empty-state"><div class="icon">📭</div><p>No donations yet</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Expenses -->
+      <div class="tab-panel" id="tab-expenses">
+        <div class="expense-form">
+          <div class="expense-form-title">➕ Add New Expense</div>
+          <div class="form-row">
+            <div class="form-group" style="margin-bottom:0;">
+              <input type="text" class="form-control" id="expenseName" placeholder="Expense name">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <input type="number" class="form-control" id="expenseAmount" placeholder="Amount (₹)">
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <select class="form-control form-select" id="expenseCategory">
+                <option value="">Category</option>
+                <option>Books</option>
+                <option>Meals</option>
+                <option>Scholarships</option>
+                <option>Uniforms</option>
+                <option>Digital Access</option>
+                <option>Infrastructure</option>
+                <option>Operations</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top:10px; display:flex; gap:10px; align-items:center;">
+            <input type="text" class="form-control" id="expenseDesc" placeholder="Description (optional)" style="flex:1;">
+            <button class="btn btn-primary" onclick="addExpense()">Add Expense</button>
+          </div>
+          <div id="expenseAlert" style="margin-top:8px;"></div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>Expense</th><th>Category</th><th>Amount</th><th>Description</th><th>Date</th></tr>
+            </thead>
+            <tbody id="expensesTbody">
+              <tr><td colspan="5"><div class="empty-state"><div class="icon">💼</div><p>No expenses recorded</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Timeline -->
+      <div class="tab-panel" id="tab-timeline">
+        <div style="margin-bottom:16px; display:flex; gap:16px; font-size:13px;">
+          <span><span style="display:inline-block; width:12px; height:12px; background:var(--green-600); border-radius:50%; margin-right:5px;"></span>Donation</span>
+          <span><span style="display:inline-block; width:12px; height:12px; background:var(--amber-500); border-radius:50%; margin-right:5px;"></span>Expense</span>
+        </div>
+        <div class="timeline" id="timelineContainer">
+          <div class="empty-state"><div class="icon">🕐</div><p>No activity yet</p></div>
+        </div>
+      </div>
+
+      <!-- Tab: Analytics -->
+      <div class="tab-panel" id="tab-analytics">
+        <div class="grid-2">
+          <div>
+            <div class="card-title" style="margin-bottom:16px;">📅 Monthly Donations</div>
+            <div class="chart-bars" id="monthlyChart">
+              <div class="empty-state" style="width:100%;"><p>No data</p></div>
+            </div>
+          </div>
+          <div>
+            <div class="card-title" style="margin-bottom:16px;">🏷️ Category Breakdown</div>
+            <div id="categoryAnalytics">
+              <div class="empty-state"><p>No data</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    let allDonors = [];
+
+    (async () => {
+      const user = await requireAuth('ngo');
+      if (!user) return;
+      document.getElementById('userInitial').textContent = user.name[0].toUpperCase();
+      document.getElementById('userName').textContent = user.name;
+      document.getElementById('ngoDate').textContent = `Platform Overview · ${new Date().toLocaleDateString('en-IN', { weekday:'long', day:'2-digit', month:'long', year:'numeric' })}`;
+
+      await loadDashboard();
+      await loadDonors();
+      await loadExpenses();
+    })();
+
+    async function loadDashboard() {
+      try {
+        const res = await fetch('/api/dashboard/ngo-summary');
+        const data = await res.json();
+        if (!data.success) return;
+
+        const { summary, categoryFunds, recentDonors, timeline } = data;
+
+        document.getElementById('totalDonations').textContent = formatINR(summary.total_donations);
+        document.getElementById('totalExpenses').textContent = formatINR(summary.total_expenses);
+        document.getElementById('remainingFund').textContent = formatINR(summary.remaining_fund);
+        document.getElementById('donationCount').textContent = summary.donation_count;
+        document.getElementById('bannerDonors').textContent = summary.unique_donors;
+        document.getElementById('bannerStudents').textContent = Math.floor(summary.total_donations / 150);
+        const trust = summary.trust_index;
+        document.getElementById('trustValue').textContent = trust + '%';
+        document.getElementById('trustBar').style.width = trust + '%';
+        document.getElementById('trustInterpret').textContent = trust < 30
+          ? '🔵 Low utilization — funds are building up'
+          : trust < 70 ? '🟢 Healthy utilization — balanced fund management'
+          : trust < 90 ? '🟡 High utilization — actively deploying funds'
+          : '🔴 Very high — monitor closely';
+
+        // Low fund alerts
+        const lowFunds = categoryFunds.filter(c => c.total < 5000);
+        if (lowFunds.length > 0) {
+          document.getElementById('lowFundAlerts').innerHTML = lowFunds.map(c => `
+            <div class="low-fund-alert">
+              <span style="font-size:20px;">⚠️</span>
+              <div>
+                <div class="alert-text">${c.category} Fund: ${formatINR(c.total)}</div>
+                <div class="alert-sub">This category needs more donations urgently</div>
+              </div>
+            </div>
+          `).join('');
+        }
+
+        // Timeline
+        if (timeline && timeline.length > 0) {
+          document.getElementById('timelineContainer').innerHTML = timeline.map(item => `
+            <div class="timeline-item">
+              <div class="timeline-dot ${item.type}"></div>
+              <div class="timeline-meta">${item.type === 'donation' ? '💰 Donation' : '💼 Expense'} · ${formatDate(item.created_at)}</div>
+              <div class="timeline-title">${item.name}</div>
+              <div class="timeline-amount">${formatINR(item.amount)} · ${item.category}</div>
+            </div>
+          `).join('');
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadDonors() {
+      try {
+        const res = await fetch('/api/donation/all');
+        const data = await res.json();
+        if (!data.success) return;
+        allDonors = data.donations;
+        renderDonors(allDonors);
+
+        // Analytics - monthly
+        const monthly = {};
+        allDonors.forEach(d => {
+          const m = new Date(d.created_at).toLocaleDateString('en-IN', { month: 'short' });
+          monthly[m] = (monthly[m] || 0) + parseFloat(d.amount);
+        });
+
+        const months = Object.entries(monthly).slice(-6);
+        const maxVal = Math.max(...months.map(m => m[1]));
+
+        if (months.length > 0) {
+          document.getElementById('monthlyChart').innerHTML = months.map(([month, total]) => `
+            <div class="chart-bar-wrap">
+              <div class="chart-bar-val">${formatINR(total).replace('₹', '').replace(/,.*/, 'k')}</div>
+              <div class="chart-bar" style="height:${Math.max(8, Math.round((total / maxVal) * 100))}px;"></div>
+              <div class="chart-bar-label">${month}</div>
+            </div>
+          `).join('');
+        }
+
+        // Category analytics
+        const cats = {};
+        allDonors.forEach(d => { cats[d.category] = (cats[d.category] || 0) + parseFloat(d.amount); });
+        const catEntries = Object.entries(cats).sort((a, b) => b[1] - a[1]);
+        const totalCat = catEntries.reduce((s, [, v]) => s + v, 0);
+        if (catEntries.length > 0) {
+          document.getElementById('categoryAnalytics').innerHTML = catEntries.map(([cat, total]) => `
+            <div class="cat-fund-item">
+              <div class="cat-fund-icon">${getCatIcon(cat)}</div>
+              <div class="cat-fund-info">
+                <div class="cat-fund-name">${cat}</div>
+                <div class="cat-fund-amount">${formatINR(total)} (${Math.round((total/totalCat)*100)}%)</div>
+              </div>
+              <div class="cat-fund-bar">
+                <div class="progress-bar-wrap">
+                  <div class="progress-bar-fill" style="width:${Math.round((total/totalCat)*100)}%"></div>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    function renderDonors(donors) {
+      document.getElementById('donorsTbody').innerHTML = donors.length === 0
+        ? '<tr><td colspan="6"><div class="empty-state"><div class="icon">📭</div><p>No donations yet</p></div></td></tr>'
+        : donors.map(d => `
+          <tr>
+            <td><strong>${d.donor_name}</strong></td>
+            <td style="color:var(--text-light); font-size:13px;">${d.donor_email}</td>
+            <td><span class="badge badge-green">${getCatIcon(d.category)} ${d.category}</span></td>
+            <td><strong>${formatINR(d.amount)}</strong></td>
+            <td><span class="badge badge-blue">${d.payment_method}</span></td>
+            <td>${formatDate(d.created_at)}</td>
+          </tr>
+        `).join('');
+    }
+
+    function filterDonors(query) {
+      const filtered = allDonors.filter(d =>
+        d.donor_name.toLowerCase().includes(query.toLowerCase()) ||
+        d.category.toLowerCase().includes(query.toLowerCase())
+      );
+      renderDonors(filtered);
+    }
+
+    async function loadExpenses() {
+      try {
+        const res = await fetch('/api/expense/all');
+        const data = await res.json();
+        if (!data.success) return;
+
+        document.getElementById('expensesTbody').innerHTML = data.expenses.length === 0
+          ? '<tr><td colspan="5"><div class="empty-state"><div class="icon">💼</div><p>No expenses recorded</p></div></td></tr>'
+          : data.expenses.map(e => `
+            <tr>
+              <td><strong>${e.expense_name}</strong></td>
+              <td><span class="badge badge-amber">${e.category}</span></td>
+              <td><strong>${formatINR(e.amount)}</strong></td>
+              <td style="color:var(--text-light); font-size:13px;">${e.description || '—'}</td>
+              <td>${formatDate(e.created_at)}</td>
+            </tr>
+          `).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    async function addExpense() {
+      const name = document.getElementById('expenseName').value.trim();
+      const amount = document.getElementById('expenseAmount').value;
+      const category = document.getElementById('expenseCategory').value;
+      const desc = document.getElementById('expenseDesc').value.trim();
+
+      if (!name || !amount || !category) {
+        document.getElementById('expenseAlert').innerHTML = '<div class="alert alert-error">Please fill all required fields.</div>';
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/expense/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ expense_name: name, amount, category, description: desc })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          showToast('Expense added successfully!');
+          document.getElementById('expenseName').value = '';
+          document.getElementById('expenseAmount').value = '';
+          document.getElementById('expenseCategory').value = '';
+          document.getElementById('expenseDesc').value = '';
+          document.getElementById('expenseAlert').innerHTML = '';
+          await loadExpenses();
+          await loadDashboard();
+        } else {
+          document.getElementById('expenseAlert').innerHTML = `<div class="alert alert-error">${data.message}</div>`;
+        }
+      } catch {
+        document.getElementById('expenseAlert').innerHTML = '<div class="alert alert-error">Server error.</div>';
+      }
+    }
+
+    function switchTab(name) {
+      document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+        const tabs = ['donors', 'expenses', 'timeline', 'analytics'];
+        btn.classList.toggle('active', tabs[i] === name);
+      });
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById(`tab-${name}`).classList.add('active');
+    }
+
+    function getCatIcon(cat) {
+      const icons = { 'Books': '📚', 'Meals': '🍱', 'Scholarships': '🎓', 'Uniforms': '👕', 'Digital Access': '💻', 'Infrastructure': '🏫', 'Operations': '⚙️' };
+      return icons[cat] || '💚';
+    }
+
+    function catFundItem(cat, total, max) {
+      return `
+        <div class="cat-fund-item">
+          <div class="cat-fund-icon">${getCatIcon(cat)}</div>
+          <div class="cat-fund-info">
+            <div class="cat-fund-name">${cat}</div>
+            <div class="cat-fund-amount">${formatINR(total)}</div>
+          </div>
+          <div class="cat-fund-bar">
+            <div class="progress-bar-wrap">
+              <div class="progress-bar-fill" style="width:${Math.round((total / max) * 100)}%"></div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    initChatbot();
+  </script>
+</body>
+</html>

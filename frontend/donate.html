@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donate — VidyaSetu</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .donate-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    /* Amount Quick Select */
+    .amount-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .amount-chip {
+      padding: 9px 18px;
+      border: 2px solid var(--border);
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-mid);
+      cursor: pointer;
+      transition: all 0.2s;
+      background: white;
+    }
+
+    .amount-chip:hover { border-color: var(--green-500); color: var(--green-700); background: var(--green-50); }
+    .amount-chip.selected { border-color: var(--green-600); background: var(--green-600); color: white; }
+
+    /* Categories */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .category-card {
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      background: white;
+    }
+
+    .category-card:hover { border-color: var(--green-400); background: var(--green-50); }
+    .category-card.selected { border-color: var(--green-600); background: var(--green-50); }
+
+    .category-card .cat-icon { font-size: 24px; display: block; margin-bottom: 5px; }
+    .category-card .cat-name { font-size: 12px; font-weight: 700; color: var(--text-dark); }
+
+    .low-fund-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: #fef3c7;
+      color: #92400e;
+      border-radius: 4px;
+      font-size: 10px;
+      padding: 1px 5px;
+      font-weight: 700;
+      margin-top: 3px;
+    }
+
+    /* Payment Methods */
+    .payment-methods {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .payment-card {
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      background: white;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-mid);
+    }
+
+    .payment-card:hover { border-color: var(--green-400); background: var(--green-50); }
+    .payment-card.selected { border-color: var(--green-600); background: var(--green-50); color: var(--green-800); }
+    .payment-card .pm-icon { font-size: 20px; }
+
+    /* Impact Preview */
+    .impact-preview {
+      background: linear-gradient(135deg, var(--green-50), white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    .impact-preview-title { font-size: 12px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .impact-number { font-family: var(--font-display); font-size: 28px; font-weight: 800; color: var(--green-700); }
+    .impact-label { font-size: 13px; color: var(--text-mid); }
+
+    /* Summary Card */
+    .summary-card {
+      background: linear-gradient(150deg, var(--green-900), var(--green-700));
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      color: white;
+      position: sticky;
+      top: 80px;
+    }
+
+    .summary-title { font-family: var(--font-display); font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+      font-size: 14px;
+    }
+
+    .summary-row:last-of-type { border-bottom: none; }
+    .summary-row .label { color: rgba(255,255,255,0.7); }
+    .summary-row .value { font-weight: 600; }
+
+    .summary-total {
+      background: rgba(255,255,255,0.12);
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      text-align: center;
+      margin: 16px 0;
+    }
+
+    .summary-total .amount {
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--green-400);
+      line-height: 1;
+    }
+
+    .summary-total .label { color: rgba(255,255,255,0.7); font-size: 12px; margin-top: 4px; }
+
+    .trust-note {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.08);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.8);
+      margin-top: 12px;
+    }
+
+    /* Payment Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .payment-modal {
+      background: white;
+      border-radius: var(--radius-xl);
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .payment-stage { display: none; }
+    .payment-stage.active { display: block; }
+
+    .payment-spinner {
+      width: 64px;
+      height: 64px;
+      border: 5px solid var(--green-100);
+      border-top-color: var(--green-600);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    .success-icon {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, var(--green-600), var(--green-400));
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin: 0 auto 20px;
+      animation: popIn 0.4s ease;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-title { font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--text-dark); margin-bottom: 8px; }
+    .modal-sub { color: var(--text-light); font-size: 14px; }
+
+    .receipt-box {
+      background: var(--green-50);
+      border: 1px dashed var(--green-400);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin: 20px 0;
+      font-size: 13px;
+    }
+
+    .receipt-row { display: flex; justify-content: space-between; padding: 5px 0; }
+    .receipt-row .rl { color: var(--text-light); }
+    .receipt-row .rv { font-weight: 600; color: var(--text-dark); }
+
+    @media (max-width: 900px) {
+      .donate-layout { grid-template-columns: 1fr; }
+      .summary-card { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/donor-dashboard" class="navbar-brand">
+      <div class="logo-icon">🎓</div>
+      <div>
+        <span class="brand-text">VidyaSetu</span>
+        <span class="brand-sub">Smart Donation Platform</span>
+      </div>
+    </a>
+    <ul class="navbar-nav">
+      <li><a href="/donor-dashboard">Dashboard</a></li>
+      <li><a href="/donate" class="active">Donate</a></li>
+    </ul>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="user-badge">
+        <div class="user-avatar" id="userInitial">U</div>
+        <span id="userName">User</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="page-container">
+    <div class="page-header">
+      <div class="page-title">Make a Donation 🎓</div>
+      <div class="page-subtitle">Every rupee you give bridges a student's path to education</div>
+    </div>
+
+    <div class="donate-layout">
+      <!-- LEFT: Form -->
+      <div>
+        <!-- Step 1: Amount -->
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header">
+            <div>
+              <div class="card-title">1. Choose Amount</div>
+              <div class="card-subtitle">Or enter a custom amount below</div>
+            </div>
+          </div>
+
+          <div class="amount-chips">
+            <button class="amount-chip" onclick="setAmount(100)">₹100</button>
+            <button class="amount-chip" onclick="setAmount(250)">₹250</button>
+            <button class="amount-chip" onclick="setAmount(500)">₹500</button>
+            <button class="amount-chip" onclick="setAmount(1000)">₹1,000</button>
+            <button class="amount-chip" onclick="setAmount(2500)">₹2,500</button>
+            <button class="amount-chip" onclick="setAmount(5000)">₹5,000</button>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Custom Amount (₹)</label>
+            <input type="number" class="form-control" id="amount" placeholder="Enter any amount" min="10" oninput="onAmountChange()">
+          </div>
+
+          <div class="impact-preview">
+            <div class="impact-preview-title">🌟 Your Impact</div>
+            <div style="display:flex; align-items:baseline; gap:6px;">
+              <span class="impact-number" id="impactNumber">0</span>
+              <span class="impact-label">students could be helped</span>
+            </div>
+            <div style="color:var(--text-muted); font-size:12px; margin-top:4px;" id="impactMsg">Enter an amount to see your impact</div>
+          </div>
+        </div>
+
+        <!-- Step 2: Category -->
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header">
+            <div class="card-title">2. Choose Category</div>
+          </div>
+          <div class="category-grid">
+            <div class="category-card" onclick="selectCategory('Books', this)">
+              <span class="cat-icon">📚</span>
+              <div class="cat-name">Books</div>
+              <div class="low-fund-badge">🔥 Low Fund</div>
+            </div>
+            <div class="category-card" onclick="selectCategory('Meals', this)">
+              <span class="cat-icon">🍱</span>
+              <div class="cat-name">Meals</div>
+            </div>
+            <div class="category-card" onclick="selectCategory('Scholarships', this)">
+              <span class="cat-icon">🎓</span>
+              <div class="cat-name">Scholarships</div>
+            </div>
+            <div class="category-card" onclick="selectCategory('Uniforms', this)">
+              <span class="cat-icon">👕</span>
+              <div class="cat-name">Uniforms</div>
+              <div class="low-fund-badge">🔥 Low Fund</div>
+            </div>
+            <div class="category-card" onclick="selectCategory('Digital Access', this)">
+              <span class="cat-icon">💻</span>
+              <div class="cat-name">Digital Access</div>
+            </div>
+            <div class="category-card" onclick="selectCategory('Infrastructure', this)">
+              <span class="cat-icon">🏫</span>
+              <div class="cat-name">Infrastructure</div>
+            </div>
+          </div>
+          <div id="selectedCategoryText" style="font-size:13px; color:var(--text-light); margin-top:10px; padding:8px; background:var(--green-50); border-radius:var(--radius-sm); display:none;">
+            ✅ Category: <strong id="catDisplay"></strong>
+          </div>
+        </div>
+
+        <!-- Step 3: Payment Method -->
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-header">
+            <div class="card-title">3. Payment Method</div>
+          </div>
+          <div class="payment-methods">
+            <div class="payment-card selected" onclick="selectPayment('UPI', this)">
+              <span class="pm-icon">📱</span> UPI
+            </div>
+            <div class="payment-card" onclick="selectPayment('Credit Card', this)">
+              <span class="pm-icon">💳</span> Credit Card
+            </div>
+            <div class="payment-card" onclick="selectPayment('Debit Card', this)">
+              <span class="pm-icon">🏧</span> Debit Card
+            </div>
+            <div class="payment-card" onclick="selectPayment('Net Banking', this)">
+              <span class="pm-icon">🏦</span> Net Banking
+            </div>
+            <div class="payment-card" onclick="selectPayment('Wallet', this)">
+              <span class="pm-icon">👜</span> Wallet
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Donor Name -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">4. Confirm Details</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Your Name (for receipt)</label>
+            <input type="text" class="form-control" id="donorName" placeholder="Your full name">
+          </div>
+          <div id="donateAlert"></div>
+          <button class="btn btn-primary btn-full btn-lg" onclick="initiateDonation()" id="donateBtn">
+            🎓 Donate Now
+          </button>
+        </div>
+      </div>
+
+      <!-- RIGHT: Summary -->
+      <div class="summary-card">
+        <div class="summary-title">📋 Donation Summary</div>
+
+        <div class="summary-row">
+          <span class="label">Category</span>
+          <span class="value" id="sum-category">— Not selected —</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Payment via</span>
+          <span class="value" id="sum-payment">UPI</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Students Helped</span>
+          <span class="value" id="sum-impact">~0 students</span>
+        </div>
+
+        <div class="summary-total">
+          <div class="amount" id="sum-amount">₹0</div>
+          <div class="label">Total Donation</div>
+        </div>
+
+        <div class="trust-note">
+          🔒 100% funds tracked. NGO expense reports available publicly.
+        </div>
+
+        <div style="margin-top:16px; font-size:12px; color:rgba(255,255,255,0.5); text-align:center;">
+          Demo Mode — No real money charged
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment Modal -->
+  <div class="modal-overlay" id="paymentModal">
+    <div class="payment-modal">
+      <!-- Stage 1: Processing -->
+      <div class="payment-stage active" id="stage1">
+        <div class="payment-spinner"></div>
+        <div class="modal-title">Payment Initiated...</div>
+        <div class="modal-sub">Connecting to payment gateway</div>
+      </div>
+
+      <!-- Stage 2: Loading -->
+      <div class="payment-stage" id="stage2">
+        <div class="payment-spinner" style="border-top-color:var(--amber-500);"></div>
+        <div class="modal-title">Processing Payment</div>
+        <div class="modal-sub">Please do not close this window</div>
+      </div>
+
+      <!-- Stage 3: Success -->
+      <div class="payment-stage" id="stage3">
+        <div class="success-icon">✅</div>
+        <div class="modal-title">Payment Successful!</div>
+        <div class="modal-sub">🎓 Demo Mode — Thank you for your generosity!</div>
+
+        <div class="receipt-box">
+          <div class="receipt-row">
+            <span class="rl">Receipt ID</span>
+            <span class="rv" id="receiptId">—</span>
+          </div>
+          <div class="receipt-row">
+            <span class="rl">Amount</span>
+            <span class="rv" id="receiptAmount">—</span>
+          </div>
+          <div class="receipt-row">
+            <span class="rl">Category</span>
+            <span class="rv" id="receiptCategory">—</span>
+          </div>
+          <div class="receipt-row">
+            <span class="rl">Date</span>
+            <span class="rv" id="receiptDate">—</span>
+          </div>
+        </div>
+
+        <div id="receiptImpact" style="background:var(--green-50); border-radius:var(--radius-sm); padding:12px; font-size:13px; color:var(--green-800); margin-bottom:20px; font-weight:500;"></div>
+
+        <button class="btn btn-primary btn-full" onclick="goToDashboard()">View Dashboard</button>
+        <button class="btn btn-ghost btn-full" onclick="closeModal()" style="margin-top:8px;">Make Another Donation</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    let selectedCategory = '';
+    let selectedPayment = 'UPI';
+    let currentUser = null;
+
+    (async () => {
+      currentUser = await requireAuth('donor');
+      if (!currentUser) return;
+      document.getElementById('userInitial').textContent = currentUser.name[0].toUpperCase();
+      document.getElementById('userName').textContent = currentUser.name;
+      document.getElementById('donorName').value = currentUser.name;
+    })();
+
+    function setAmount(val) {
+      document.getElementById('amount').value = val;
+      document.querySelectorAll('.amount-chip').forEach(c => c.classList.remove('selected'));
+      event.target.classList.add('selected');
+      onAmountChange();
+    }
+
+    function onAmountChange() {
+      const amt = parseFloat(document.getElementById('amount').value) || 0;
+      const students = Math.floor(amt / 150);
+      document.getElementById('impactNumber').textContent = students;
+      document.getElementById('impactMsg').textContent = amt > 0
+        ? `Based on ₹150 per student support estimate`
+        : 'Enter an amount to see your impact';
+      document.getElementById('sum-amount').textContent = formatINR(amt);
+      document.getElementById('sum-impact').textContent = `~${students} student${students !== 1 ? 's' : ''}`;
+      document.querySelectorAll('.amount-chip').forEach(c => {
+        if (parseFloat(c.textContent.replace(/[₹,]/g, '')) === amt) c.classList.add('selected');
+        else c.classList.remove('selected');
+      });
+    }
+
+    function selectCategory(name, el) {
+      selectedCategory = name;
+      document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      document.getElementById('catDisplay').textContent = name;
+      document.getElementById('selectedCategoryText').style.display = 'block';
+      document.getElementById('sum-category').textContent = name;
+    }
+
+    function selectPayment(name, el) {
+      selectedPayment = name;
+      document.querySelectorAll('.payment-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      document.getElementById('sum-payment').textContent = name;
+    }
+
+    function showAlert(msg, type = 'error') {
+      document.getElementById('donateAlert').innerHTML =
+        `<div class="alert alert-${type === 'error' ? 'error' : 'success'}">${msg}</div>`;
+    }
+
+    async function initiateDonation() {
+      const amount = document.getElementById('amount').value;
+      if (!amount || parseFloat(amount) < 10) { showAlert('Please enter a valid amount (min ₹10).'); return; }
+      if (!selectedCategory) { showAlert('Please select a donation category.'); return; }
+
+      // Show modal flow
+      document.getElementById('paymentModal').classList.add('open');
+      showStage(1);
+      setTimeout(() => showStage(2), 1500);
+      setTimeout(async () => {
+        try {
+          const res = await fetch('/api/donation/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount: parseFloat(amount), category: selectedCategory, payment_method: selectedPayment })
+          });
+          const data = await res.json();
+
+          if (data.success) {
+            document.getElementById('receiptId').textContent = data.receiptId;
+            document.getElementById('receiptAmount').textContent = formatINR(amount);
+            document.getElementById('receiptCategory').textContent = selectedCategory;
+            document.getElementById('receiptDate').textContent = new Date().toLocaleDateString('en-IN');
+            document.getElementById('receiptImpact').textContent = data.impactMessage;
+            showStage(3);
+          } else {
+            document.getElementById('paymentModal').classList.remove('open');
+            showAlert(data.message);
+          }
+        } catch {
+          document.getElementById('paymentModal').classList.remove('open');
+          showAlert('Payment failed. Please try again.');
+        }
+      }, 3500);
+    }
+
+    function showStage(n) {
+      document.querySelectorAll('.payment-stage').forEach((s, i) => {
+        s.classList.toggle('active', i + 1 === n);
+      });
+    }
+
+    function goToDashboard() {
+  sessionStorage.setItem('justDonated', 'true');
+  window.location.href = '/donor-dashboard';
+}
+
+    function closeModal() {
+      document.getElementById('paymentModal').classList.remove('open');
+      document.getElementById('amount').value = '';
+      selectedCategory = '';
+      document.querySelectorAll('.category-card').forEach(c => c.classList.remove('selected'));
+      document.getElementById('selectedCategoryText').style.display = 'none';
+      document.getElementById('sum-category').textContent = '— Not selected —';
+      document.getElementById('sum-amount').textContent = '₹0';
+      document.getElementById('impactNumber').textContent = '0';
+    }
+
+    initChatbot();
+  </script>
+</body>
+</html>

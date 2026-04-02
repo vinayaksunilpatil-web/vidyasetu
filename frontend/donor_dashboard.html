@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Dashboard — VidyaSetu</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--green-900), var(--green-700), var(--teal-600));
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      color: white;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .welcome-banner::before {
+      content: '🎓';
+      position: absolute;
+      font-size: 120px;
+      right: 40px;
+      top: -10px;
+      opacity: 0.15;
+    }
+
+    .welcome-name {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 4px;
+    }
+
+    .welcome-sub { color: rgba(255,255,255,0.75); font-size: 15px; }
+
+    .impact-score-ring {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      border: 3px solid rgba(255,255,255,0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .impact-score-ring .score {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--green-400);
+      line-height: 1;
+    }
+
+    .impact-score-ring .label { font-size: 11px; color: rgba(255,255,255,0.7); }
+
+    .cat-fund-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--green-50);
+    }
+
+    .cat-fund-item:last-child { border-bottom: none; }
+    .cat-fund-icon { font-size: 20px; width: 28px; text-align: center; }
+    .cat-fund-info { flex: 1; }
+    .cat-fund-name { font-size: 14px; font-weight: 600; color: var(--text-dark); }
+    .cat-fund-amount { font-size: 12px; color: var(--text-light); }
+    .cat-fund-bar { flex: 2; }
+
+    .suggestion-card {
+      background: linear-gradient(135deg, #fff8e1, #fffde7);
+      border: 1px solid #ffe082;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .suggestion-icon { font-size: 24px; }
+    .suggestion-title { font-weight: 700; font-size: 14px; color: #5d4037; }
+    .suggestion-desc { font-size: 13px; color: #795548; margin-top: 3px; }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--green-600);
+      display: inline-block;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="/donor-dashboard" class="navbar-brand">
+      <div class="logo-icon">🎓</div>
+      <div>
+        <span class="brand-text">VidyaSetu</span>
+        <span class="brand-sub">Smart Donation Platform</span>
+      </div>
+    </a>
+    <ul class="navbar-nav">
+      <li><a href="/donor-dashboard" class="active">Dashboard</a></li>
+      <li><a href="/donate">Donate Now</a></li>
+    </ul>
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="user-badge">
+        <div class="user-avatar" id="userInitial">U</div>
+        <span id="userName">User</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="page-container">
+
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+      <div>
+        <div class="welcome-name" id="welcomeName">Welcome! 👋</div>
+        <div class="welcome-sub">Here's your donation impact overview</div>
+        <div style="margin-top:16px;">
+          <a href="/donate" class="btn btn-outline" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.4); color:white;">
+            🎓 Make a Donation
+          </a>
+        </div>
+      </div>
+      <div class="impact-score-ring">
+        <div class="score" id="impactScore">0</div>
+        <div class="label">Students<br>Helped</div>
+      </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="grid-4" style="margin-bottom:28px;">
+      <div class="stat-card">
+        <div class="stat-icon green">💰</div>
+        <div>
+          <div class="stat-value" id="totalDonated">₹0</div>
+          <div class="stat-label">Total Donated</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon teal">🎁</div>
+        <div>
+          <div class="stat-value" id="donationCount">0</div>
+          <div class="stat-label">Donations Made</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon amber">⭐</div>
+        <div>
+          <div class="stat-value" id="impactScoreStat">0</div>
+          <div class="stat-label">Impact Score</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue">📅</div>
+        <div>
+          <div class="stat-value" id="lastDonation">—</div>
+          <div class="stat-label">Last Donation</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:28px;">
+      <!-- Donation History -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">📋 Donation History</div>
+            <div class="card-subtitle">Your complete giving record</div>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="donationTbody">
+              <tr><td colspan="4">
+                <div class="empty-state">
+                  <div class="icon">📭</div>
+                  <p>No donations yet</p>
+                </div>
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Right side -->
+      <div style="display:flex; flex-direction:column; gap:20px;">
+        <!-- Smart Suggestions -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">💡 Smart Suggestions</div>
+          </div>
+          <div id="suggestions">
+            <div class="suggestion-card">
+              <span class="suggestion-icon">🔥</span>
+              <div>
+                <div class="suggestion-title">Most Needed Fund: Books</div>
+                <div class="suggestion-desc">Book fund is critically low. Your donation here makes the highest impact right now.</div>
+              </div>
+            </div>
+            <div class="suggestion-card">
+              <span class="suggestion-icon">💡</span>
+              <div>
+                <div class="suggestion-title">Tip: Monthly Giving</div>
+                <div class="suggestion-desc">Setting a ₹250/month donation can support one student throughout the year!</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category distribution -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📊 My Contributions</div>
+          </div>
+          <div id="categoryBreakdown">
+            <div class="empty-state" style="padding:24px;">
+              <div class="icon">📊</div>
+              <p>Make donations to see breakdown</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Impact Messages -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">🌟 Impact Messages</div>
+          <div class="card-subtitle">See the difference your donations make</div>
+        </div>
+      </div>
+      <div id="impactMessages">
+        <div class="empty-state">
+          <div class="icon">🌱</div>
+          <p>Your impact messages will appear after your first donation</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    (async () => {
+      const user = await requireAuth('donor');
+      if (!user) return;
+
+      document.getElementById('welcomeName').textContent = `Welcome, ${user.name}! 👋`;
+      document.getElementById('userInitial').textContent = user.name[0].toUpperCase();
+      document.getElementById('userName').textContent = user.name;
+
+      // Load data immediately on page open
+      await loadStats();
+      await loadDonations();
+
+      // Check if user just came from donation page
+      if (sessionStorage.getItem('justDonated') === 'true') {
+        sessionStorage.removeItem('justDonated');
+        showToast('🎉 Donation successful! Dashboard updated!');
+      }
+
+      // Silent auto refresh every 15 seconds
+      setInterval(async () => {
+        await loadStats();
+        await loadDonations();
+      }, 15000);
+    })();
+
+    async function loadStats() {
+      try {
+       const res = await fetch('/api/donation/my-stats');
+        const data = await res.json();
+        if (!data.success) return;
+
+        const { totals, byCategory } = data;
+        const impact = Math.floor(totals.total / 150);
+
+        document.getElementById('totalDonated').textContent = formatINR(totals.total);
+        document.getElementById('donationCount').textContent = totals.count;
+        document.getElementById('impactScore').textContent = impact;
+        document.getElementById('impactScoreStat').textContent = impact;
+
+        if (byCategory && byCategory.length > 0) {
+          const maxAmt = Math.max(...byCategory.map(c => c.total));
+          document.getElementById('categoryBreakdown').innerHTML = byCategory.map(c => `
+            <div class="cat-fund-item">
+              <div class="cat-fund-icon">${getCatIcon(c.category)}</div>
+              <div class="cat-fund-info">
+                <div class="cat-fund-name">${c.category}</div>
+                <div class="cat-fund-amount">${formatINR(c.total)}</div>
+              </div>
+              <div class="cat-fund-bar">
+                <div class="progress-bar-wrap">
+                  <div class="progress-bar-fill" style="width:${Math.round((c.total / maxAmt) * 100)}%"></div>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        }
+      } catch (e) { console.error('loadStats error:', e); }
+    }
+
+    async function loadDonations() {
+      try {
+       const res = await fetch('/api/donation/mine');
+        const data = await res.json();
+
+        if (!data.success || !data.donations || data.donations.length === 0) {
+          document.getElementById('donationTbody').innerHTML = `
+            <tr><td colspan="4">
+              <div class="empty-state">
+                <div class="icon">📭</div>
+                <p>No donations yet. <a href="/donate" style="color:var(--green-700); font-weight:600;">Make your first donation!</a></p>
+              </div>
+            </td></tr>`;
+          return;
+        }
+
+        document.getElementById('lastDonation').textContent = formatDate(data.donations[0].created_at);
+
+        document.getElementById('donationTbody').innerHTML = data.donations.map(d => `
+          <tr>
+            <td>${formatDate(d.created_at)}</td>
+            <td><span class="badge badge-green">${getCatIcon(d.category)} ${d.category}</span></td>
+            <td><strong>${formatINR(d.amount)}</strong></td>
+            <td><span class="status-dot"></span>Completed</td>
+          </tr>
+        `).join('');
+
+        document.getElementById('impactMessages').innerHTML = data.donations.slice(0, 5).map(d => {
+          const students = Math.floor(d.amount / 150);
+          return `
+            <div style="display:flex; gap:14px; align-items:flex-start; padding:14px 0; border-bottom:1px solid var(--green-50);">
+              <div style="width:40px; height:40px; border-radius:50%; background:var(--green-100); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0;">${getCatIcon(d.category)}</div>
+              <div>
+                <div style="font-size:14px; font-weight:600; color:var(--text-dark);">${getImpactMsg(d.category, d.amount, students)}</div>
+                <div style="font-size:12px; color:var(--text-light); margin-top:3px;">${formatDate(d.created_at)} · ${formatINR(d.amount)} · ${d.category}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      } catch (e) { console.error('loadDonations error:', e); }
+    }
+
+    function getCatIcon(cat) {
+      const icons = { 'Books': '📚', 'Meals': '🍱', 'Scholarships': '🎓', 'Uniforms': '👕', 'Digital Access': '💻', 'Infrastructure': '🏫' };
+      return icons[cat] || '💚';
+    }
+
+    function getImpactMsg(cat, amount, students) {
+      const msgs = {
+        'Books': `Your ₹${amount} donation provided textbooks for ${students} student${students !== 1 ? 's' : ''}!`,
+        'Meals': `Your ₹${amount} ensured nutritious meals for ${students} student${students !== 1 ? 's' : ''} for a week!`,
+        'Scholarships': `Your ₹${amount} scholarship fund supported ${students} deserving student${students !== 1 ? 's' : ''}!`,
+        'Uniforms': `Your ₹${amount} helped ${students} student${students !== 1 ? 's' : ''} get proper school uniforms!`,
+        'Digital Access': `Your ₹${amount} gave ${students} student${students !== 1 ? 's' : ''} access to digital learning!`,
+        'Infrastructure': `Your ₹${amount} contributed to building better classrooms for the future!`,
+      };
+      return msgs[cat] || `Your ₹${amount} donation made a real difference for ${students} student${students !== 1 ? 's' : ''}!`;
+    }
+
+    initChatbot();
+  </script>
+</body>
+</html>

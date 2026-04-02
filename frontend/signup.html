@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account — VidyaSetu</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { display: flex; min-height: 100vh; }
+
+    .auth-left {
+      flex: 1;
+      background: linear-gradient(150deg, var(--green-900) 0%, var(--green-700) 60%, var(--teal-600) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 60px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-left::before {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+      top: -100px; right: -80px;
+    }
+
+    .auth-left-content { position: relative; z-index: 1; text-align: center; }
+
+    .auth-logo {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -1px;
+      margin-bottom: 6px;
+    }
+
+    .auth-logo span { color: var(--green-400); }
+    .auth-tagline { color: rgba(255,255,255,0.75); font-size: 16px; margin-bottom: 48px; }
+
+    .impact-stat {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .impact-stat .number {
+      font-family: var(--font-display);
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--green-400);
+      line-height: 1;
+    }
+
+    .impact-stat .label { color: rgba(255,255,255,0.75); font-size: 13px; margin-top: 4px; }
+
+    .auth-right {
+      width: 480px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 40px;
+      background: var(--bg-page);
+      overflow-y: auto;
+    }
+
+    .auth-form-box { width: 100%; }
+
+    .auth-form-title {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-dark);
+      margin-bottom: 6px;
+    }
+
+    .auth-form-sub { color: var(--text-light); font-size: 14px; margin-bottom: 28px; }
+
+    .input-with-icon { position: relative; }
+    .input-with-icon .icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      pointer-events: none;
+    }
+    .input-with-icon .form-control { padding-left: 42px; }
+
+    .role-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .role-option {
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 12px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+      background: white;
+    }
+
+    .role-option:hover { border-color: var(--green-400); background: var(--green-50); }
+    .role-option.selected { border-color: var(--green-600); background: var(--green-50); }
+
+    .role-option .icon { font-size: 28px; display: block; margin-bottom: 6px; }
+    .role-option .name { font-weight: 700; font-size: 15px; color: var(--text-dark); }
+    .role-option .desc { font-size: 12px; color: var(--text-light); margin-top: 3px; }
+    .role-option input { display: none; }
+
+    .auth-switch { text-align: center; margin-top: 20px; font-size: 14px; color: var(--text-mid); }
+    .auth-switch a { color: var(--green-700); font-weight: 600; text-decoration: none; }
+
+    @media (max-width: 850px) {
+      body { flex-direction: column; }
+      .auth-left { display: none; }
+      .auth-right { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-left">
+    <div class="auth-left-content">
+      <div class="auth-logo">🎓 Vidya<span>Setu</span></div>
+      <div class="auth-tagline">Be the bridge to education</div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;">
+        <div class="impact-stat">
+          <div class="number">2,400+</div>
+          <div class="label">Students Supported</div>
+        </div>
+        <div class="impact-stat">
+          <div class="number">₹18L+</div>
+          <div class="label">Funds Raised</div>
+        </div>
+        <div class="impact-stat">
+          <div class="number">340+</div>
+          <div class="label">Donors</div>
+        </div>
+        <div class="impact-stat">
+          <div class="number">98%</div>
+          <div class="label">Trust Index</div>
+        </div>
+      </div>
+
+      <div style="color:rgba(255,255,255,0.6); font-size:13px; text-align:center;">
+        Join VidyaSetu and help bridge the education gap for underprivileged students across India 🇮🇳
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-form-box">
+      <div class="auth-form-title">Create Account ✨</div>
+      <div class="auth-form-sub">Join thousands of donors making a difference</div>
+
+      <div id="formAlert"></div>
+
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <div class="input-with-icon">
+          <span class="icon">👤</span>
+          <input type="text" class="form-control" id="name" placeholder="Your full name" autocomplete="name">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <div class="input-with-icon">
+          <span class="icon">📧</span>
+          <input type="email" class="form-control" id="email" placeholder="you@example.com" autocomplete="email">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <div class="input-with-icon">
+          <span class="icon">📱</span>
+          <input type="tel" class="form-control" id="phone" placeholder="+91 XXXXX XXXXX" autocomplete="tel">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="input-with-icon">
+          <span class="icon">🔑</span>
+          <input type="password" class="form-control" id="password" placeholder="Minimum 6 characters" autocomplete="new-password">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">I am joining as</label>
+        <div class="role-selector">
+          <label class="role-option selected" id="roleDonor" onclick="selectRole('donor')">
+            <span class="icon">🤝</span>
+            <div class="name">Donor</div>
+            <div class="desc">I want to contribute funds</div>
+            <input type="radio" name="role" value="donor" checked>
+          </label>
+          <label class="role-option" id="roleNGO" onclick="selectRole('ngo')">
+            <span class="icon">🏫</span>
+            <div class="name">NGO / Admin</div>
+            <div class="desc">I manage the platform</div>
+            <input type="radio" name="role" value="ngo">
+          </label>
+        </div>
+      </div>
+
+      <button class="btn btn-primary btn-full btn-lg" onclick="handleSignup()" id="signupBtn">
+        Create Free Account
+      </button>
+
+      <div class="auth-switch" style="margin-top:16px;">
+        Already have an account? <a href="/login">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    let selectedRole = 'donor';
+
+    function selectRole(role) {
+      selectedRole = role;
+      document.getElementById('roleDonor').classList.toggle('selected', role === 'donor');
+      document.getElementById('roleNGO').classList.toggle('selected', role === 'ngo');
+    }
+
+    function showAlert(msg, type = 'error') {
+      document.getElementById('formAlert').innerHTML =
+        `<div class="alert alert-${type === 'error' ? 'error' : 'success'}">${msg}</div>`;
+    }
+
+    async function handleSignup() {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const password = document.getElementById('password').value;
+      const btn = document.getElementById('signupBtn');
+
+      if (!name || !email || !password) { showAlert('Name, email, and password are required.'); return; }
+      if (password.length < 6) { showAlert('Password must be at least 6 characters.'); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAlert('Please enter a valid email.'); return; }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Creating Account...';
+
+      try {
+        const res = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, phone, password, role: selectedRole })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          showAlert('✅ Account created! Redirecting to login...', 'success');
+          setTimeout(() => window.location.href = '/login', 1800);
+        } else {
+          showAlert(data.message);
+          btn.disabled = false;
+          btn.innerHTML = 'Create Free Account';
+        }
+      } catch {
+        showAlert('Connection error. Please try again.');
+        btn.disabled = false;
+        btn.innerHTML = 'Create Free Account';
+      }
+    }
+  </script>
+</body>
+</html>
