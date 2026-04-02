@@ -26,7 +26,7 @@ VIDHYASETU/
 │       └── 📄 email.js           ← Nodemailer OTP + receipt emails
 │
 ├── 📁 frontend/
-│   ├── 📄 index.html
+│   ├── 📄 login.html
 │   ├── 📄 signup.html
 │   ├── 📄 verify_otp.html
 │   ├── 📄 donor_dashboard.html
