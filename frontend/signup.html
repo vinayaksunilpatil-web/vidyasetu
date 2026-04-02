@@ -223,7 +223,7 @@
       </button>
 
       <div class="auth-switch" style="margin-top:16px;">
-        Already have an account? <a href="/login">Sign in</a>
+        Already have an account? <a href="/index">Sign in</a>
       </div>
     </div>
   </div>
@@ -267,7 +267,7 @@
 
         if (data.success) {
           showAlert('✅ Account created! Redirecting to login...', 'success');
-          setTimeout(() => window.location.href = '/login', 1800);
+          setTimeout(() => window.location.href = '/index', 1800);
         } else {
           showAlert(data.message);
           btn.disabled = false;

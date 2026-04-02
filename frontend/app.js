@@ -23,14 +23,14 @@ async function requireAuth(expectedRole = null) {
   try {
     const res = await fetch('/api/auth/me');
     const data = await res.json();
-    if (!data.success) { window.location.href = '/login'; return null; }
+    if (!data.success) { window.location.href = '/index'; return null; }
     if (expectedRole && data.user.role !== expectedRole) {
       window.location.href = data.user.role === 'ngo' ? '/ngo-dashboard' : '/donor-dashboard';
       return null;
     }
     return data.user;
   } catch {
-    window.location.href = '/login';
+    window.location.href = '/index';
     return null;
   }
 }
@@ -48,7 +48,7 @@ function formatDate(dateStr) {
 // ── Logout ─────────────────────────────────────────────────────
 async function logout() {
   await fetch('/api/auth/logout', { method: 'POST' });
-  window.location.href = '/login';
+  window.location.href = '/index';
 }
 
 // ── Chatbot ────────────────────────────────────────────────────
