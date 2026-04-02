@@ -70,7 +70,7 @@
       height: 60px;
       border: 2px solid var(--border);
       border-radius: var(--radius-md);
-      text-align: center;
+       text-align: center;
       font-size: 24px;
       font-family: var(--font-display);
       font-weight: 700;
@@ -157,7 +157,7 @@
     </div>
 
     <br>
-    <a href="/index" class="back-link">← Back to Login</a>
+    <a href="/login" class="back-link">← Back to Login</a>
   </div>
 
   <script src="app.js"></script>
@@ -166,7 +166,7 @@
 
   // If no email, go back to login
   if (!email) {
-    window.location.href = '/index';
+    window.location.href = '/login';
   }
 
   document.getElementById('emailDisplay').textContent = email;
